@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Productos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-search"></i> Buscar Productos</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('buscar') }}">
+                    <div class="input-group mb-3">
+                        <input type="text" 
+                               class="form-control" 
+                               name="termino" 
+                               value="{{ termino }}"
+                               placeholder="Buscar por nombre de producto o categoría..."
+                               autofocus>
+                        <button class="btn btn-info" type="submit">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+
+                {% if termino %}
+                    <hr>
+                    {% if productos %}
+                        <h5 class="mb-3">Resultados de búsqueda para: <strong>"{{ termino }}"</strong></h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre del Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Categoría</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for producto in productos %}
+                                    <tr>
+                                        <td>{{ producto.id }}</td>
+                                        <td>{{ producto.nombre }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ producto.cantidad }} unidades</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ producto.categoria }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ url_for('editar', id=producto.id) }}" 
+                                               class="btn btn-warning btn-sm" 
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{{ url_for('eliminar', id=producto.id) }}" 
+                                               class="btn btn-danger btn-sm" 
+                                               title="Eliminar"
+                                               onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-success mt-3">
+                            <i class="bi bi-check-circle"></i> Se encontraron <strong>{{ productos|length }}</strong> producto(s).
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> 
+                            No se encontraron productos con el término de búsqueda: <strong>"{{ termino }}"</strong>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Ingrese un término de búsqueda para encontrar productos.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
